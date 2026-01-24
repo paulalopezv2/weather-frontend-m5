@@ -1,0 +1,34 @@
+/* === COMPONENTE CARD (BEM) === */
+
+.place-card {
+  background: $color-card;
+  border-radius: $radius;
+  box-shadow: $shadow;
+  padding: 20px;
+  text-align: center;
+
+  &__icon {
+    font-size: 42px;
+    margin-bottom: 8px;
+  }
+
+  &__name {
+    font-size: 18px;
+    margin: 0 0 6px;
+    font-weight: 700;
+  }
+
+  &__meta {
+    margin: 0 0 14px;
+    opacity: 0.85;
+  }
+
+  &__btn {
+    background: $color-primary;
+    border: none;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+}

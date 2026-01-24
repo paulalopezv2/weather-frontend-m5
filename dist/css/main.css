@@ -1,0 +1,131 @@
+@charset "UTF-8";
+/* === MAIN SASS (importa parciales) === */
+/* === VARIABLES === */
+/* === LAYOUT GENERAL === */
+body.weather-app {
+  font-family: "Poppins", Arial, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  /* FONDO CON IMAGEN */
+  background-image: url("../assets/img/fondo1.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center top;
+  background-attachment: fixed;
+  /* fallback por si no carga la imagen */
+  background-color: #eaf6ff;
+}
+
+/* CONTENIDO PRINCIPAL */
+main {
+  background: transparent;
+  padding-bottom: 80px;
+}
+
+
+main.container {
+  background: transparent !important;
+}
+
+/* Navbar */
+.navbar {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(6px);
+}
+
+/*COMPONENTE CARD (BEM) */
+.place-card {
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  text-align: center;
+}
+.place-card__icon {
+  font-size: 42px;
+  margin-bottom: 8px;
+}
+.place-card__name {
+  font-size: 18px;
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+.place-card__meta {
+  margin: 0 0 14px;
+  opacity: 0.85;
+}
+.place-card__btn {
+  background: #1e88e5;
+  border: none;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.tarjeta-detalle {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+.tarjeta-detalle .icono-detalle {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+.tarjeta-detalle .ciudad-detalle {
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+.tarjeta-detalle .temp-detalle {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+.tarjeta-detalle .info-extra {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+.tarjeta-detalle .subtitulo {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* mini cards del pronóstico */
+.forecast-card {
+  background-color: #f8fafc;
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  height: 100%;
+}
+.forecast-card__day {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+.forecast-card__icon {
+  font-size: 1.4rem;
+  margin-bottom: 0.25rem;
+}
+.forecast-card__temp {
+  font-size: 0.9rem;
+  color: #444;
+}
+
+/*# sourceMappingURL=main.css.map */
+
+
+//* Fondo ilustrado Home */
+.home-bg {
+  background: url("../../assets/img/fondo1.png") no-repeat center top / cover;
+  min-height: 100vh;
+}
+
+.weather-app.home-bg {
+  background: url("../../assets/img/fondo1.png") no-repeat center top / cover !important;
+}
