@@ -4,3 +4,16 @@
 @import "layout/layout";
 @import "components/place-card";
 @import "components/detalle";
+
+#weekly .card {
+  min-width: 110px;
+}
+#weekly .fw-bold {
+  white-space: nowrap;
+}
+
+.icono-detalle {
+  font-size: 72px;   // prueba 56 / 64 / 72
+  line-height: 1;
+}
+

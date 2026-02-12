@@ -1,6 +1,13 @@
-console.log("detalle.js cargado");
+import { lugares } from "./data/lugares.js";
 
-//  1) Función arriba (más claro)
+// 1) leer id desde la URL: detalle.html?id=1
+function obtenerIdDesdeUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const id = parseInt(params.get("id"));
+  return id;
+}
+
+// 2) icono según estado
 function iconoPorEstado(estado) {
   if (estado === "Soleado") return "☀️";
   if (estado === "Nublado") return "☁️";
@@ -8,91 +15,90 @@ function iconoPorEstado(estado) {
   return "🌤️";
 }
 
-// 2) Leer id
-const params = new URLSearchParams(window.location.search);
-const id = parseInt(params.get("id"));
-console.log("id recibido:", id);
+// 3) pintar detalle
+function renderDetalle(lugar) {
+  const cityName = document.getElementById("cityName");
+  const cityTemp = document.getElementById("cityTemp");
+  const cityState = document.getElementById("cityState");
+  const cityIcon = document.getElementById("cityIcon");
+  const weekly = document.getElementById("weekly");
+  const stats = document.getElementById("stats");
 
-// 3) Buscar lugar
-const lugar = obtenerLugarPorId(id);
-console.log("lugar encontrado:", lugar);
+  if (!cityName || !cityTemp || !cityState || !cityIcon || !weekly || !stats) {
+    console.error("Faltan IDs en detalle.html (cityName, cityTemp, cityState, cityIcon, weekly, stats)");
+    return;
+  }
 
-// 4) Elementos del DOM (básicos)
-const elName = document.querySelector("#cityName");
-const elTemp = document.querySelector("#cityTemp");
-const elState = document.querySelector("#cityState");
+  // Datos principales
+  cityName.textContent = lugar.nombre;
+  cityTemp.textContent = `${lugar.tempActual}°C`;
+  cityState.textContent = lugar.estadoActual;
+  cityIcon.textContent = iconoPorEstado(lugar.estadoActual);
 
-// 5) Si faltan IDs, no seguimos
-if (!elName || !elTemp || !elState) {
-  console.log(" Faltan IDs en detalle.html (cityName/cityTemp/cityState)");
-} else if (!lugar) {
-  //  6) Si no existe el lugar, mostramos error
-  elName.textContent = "Ciudad no encontrada";
-  elTemp.textContent = "--°C";
-  elState.textContent = "";
-  console.log(" No se encontró lugar con ese id");
-} else {
-  // 7) Pintar datos principales
-  elName.textContent = lugar.nombre;
-  elTemp.textContent = `${lugar.tempActual}°C`;
-  elState.textContent = lugar.estadoActual;
-  console.log(" Pintado en pantalla");
+  // Pronóstico semanal
+  weekly.innerHTML = "";
 
-  // =========================
-  //  PRONÓSTICO SEMANAL
-  // =========================
-  const weekly = document.querySelector("#weekly");
+  for (let i = 0; i < lugar.pronosticoSemanal.length; i++) {
+    const dia = lugar.pronosticoSemanal[i];
 
-  if (!weekly) {
-    console.log("No existe el contenedor #weekly en detalle.html");
-  } else {
-    weekly.innerHTML = ""; // limpiar
-
-    for (let i = 0; i < lugar.pronosticoSemanal.length; i++) {
-      const dia = lugar.pronosticoSemanal[i];
-
-      weekly.innerHTML += `
-        <div class="col">
-          <div class="card p-2 text-center shadow-sm">
-            <div style="font-size: 24px;">${iconoPorEstado(dia.estado)}</div>
-            <div class="fw-bold">${dia.dia}</div>
-            <div class="small">${dia.min}° / ${dia.max}°</div>
-            <div class="small text-muted">${dia.estado}</div>
+    weekly.innerHTML += `
+      <div class="col">
+        <div class="card p-3 rounded-4 shadow-sm h-100 text-center">
+          <div class="fs-3 mb-1">${iconoPorEstado(dia.estado)}</div>
+          <div class="fw-bold">${dia.dia}</div>
+          <div class="text-muted small mb-2">${dia.estado}</div>
+          <div>
+            <span class="fw-bold">${dia.max}°</span>
+            <span class="text-muted"> / ${dia.min}°</span>
           </div>
         </div>
-      `;
-
-      console.log("día pintado:", dia.dia, dia.min, dia.max, dia.estado);
-    }
+      </div>
+    `;
   }
 
-  // =========================
-  //  ESTADÍSTICAS DE LA SEMANA
-  // =========================
-  const estadisticas = calcularEstadisticas(lugar.pronosticoSemanal);
-  console.log("estadísticas:", estadisticas);
+  // Estadísticas (simple y bonito)
+  const mins = lugar.pronosticoSemanal.map((d) => d.min);
+  const maxs = lugar.pronosticoSemanal.map((d) => d.max);
 
-  const statTemp = document.querySelector("#statTemp");
-  const statDias = document.querySelector("#statDias");
-  const statResumen = document.querySelector("#statResumen");
+  const minSemana = Math.min(...mins);
+  const maxSemana = Math.max(...maxs);
+  const promMin = Math.round(mins.reduce((a, b) => a + b, 0) / mins.length);
+  const promMax = Math.round(maxs.reduce((a, b) => a + b, 0) / maxs.length);
 
-  if (!statTemp || !statDias || !statResumen) {
-    console.log(" Faltan IDs de estadísticas (statTemp/statDias/statResumen)");
-  } else {
-    // 1) Temperaturas
-    statTemp.textContent =
-      `Temp mínima: ${estadisticas.minSemana}°C | ` +
-      `Temp máxima: ${estadisticas.maxSemana}°C | ` +
-      `Promedio: ${estadisticas.promSemana.toFixed(1)}°C`;
+  stats.innerHTML = `
+    <h4 class="fw-bold mb-2">Estadísticas de la semana</h4>
+    <ul class="mb-0">
+      <li><strong>Mínima más baja:</strong> ${minSemana}°</li>
+      <li><strong>Máxima más alta:</strong> ${maxSemana}°</li>
+      <li><strong>Promedio mínimas:</strong> ${promMin}°</li>
+      <li><strong>Promedio máximas:</strong> ${promMax}°</li>
+    </ul>
+  `;
+}
 
-    // 2) Conteo por clima
-    let textoDias = "Días por tipo de clima: ";
-    for (let estado in estadisticas.conteoEstados) {
-      textoDias += `${estado}: ${estadisticas.conteoEstados[estado]}  `;
-    }
-    statDias.textContent = textoDias;
+// 4) pintar error
+function renderError() {
+  const cityName = document.getElementById("cityName");
+  const cityTemp = document.getElementById("cityTemp");
+  const cityState = document.getElementById("cityState");
+  const cityIcon = document.getElementById("cityIcon");
+  const weekly = document.getElementById("weekly");
+  const stats = document.getElementById("stats");
 
-    // 3) Resumen
-    statResumen.textContent = estadisticas.resumen;
-  }
+  if (cityName) cityName.textContent = "Ciudad no encontrada";
+  if (cityTemp) cityTemp.textContent = "--";
+  if (cityState) cityState.textContent = "Vuelve al Home y elige una ciudad";
+  if (cityIcon) cityIcon.textContent = "⚠️";
+  if (weekly) weekly.innerHTML = "";
+  if (stats) stats.innerHTML = "<p class='mb-0'>Sin estadísticas disponibles.</p>";
+}
+
+// INIT
+const id = obtenerIdDesdeUrl();
+const lugar = lugares.find((l) => l.id === id);
+
+if (!id || !lugar) {
+  renderError();
+} else {
+  renderDetalle(lugar);
 }
